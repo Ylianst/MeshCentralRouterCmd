@@ -68,6 +68,7 @@ namespace MeshCentralRouterCmd
         {
             NoError = 0
         }
+        public long PendingSendLength { get { lock (pendingSends) { return pendingSends.Count; } } }
 
         private void TlsDump(string direction, byte[] data, int offset, int len) { if (tlsdump) { try { File.AppendAllText("debug.log", direction + ": " + BitConverter.ToString(data, offset, len).Replace("-", string.Empty) + "\r\n"); } catch (Exception) { } } }
 
@@ -193,30 +194,30 @@ namespace MeshCentralRouterCmd
             if (state != ConnectionStates.Connected) return 0;
             Log("WebSocketClient-SEND-String: " + data);
             byte[] buf = UTF8Encoding.UTF8.GetBytes(data);
-            return SendFragment(buf, 0, buf.Length, 129);
+            return SendFragment(buf, 0, buf.Length, 129, true);
         }
 
         public int SendBinary(byte[] data)
         {
             Log("WebSocketClient-SEND-Binary-Len:" + data.Length);
-            return SendFragment(data, 0, data.Length, 130);
+            return SendFragment(data, 0, data.Length, 130, false);
         }
 
         public int SendBinary(byte[] data, int offset, int len) {
             Log("WebSocketClient-SEND-Binary-Len:" + len);
-            return SendFragment(data, offset, len, 130);
+            return SendFragment(data, offset, len, 130, false);
         }
 
         public int SendPing(byte[] data, int offset, int len)
         {
             Log("WebSocketClient-SEND-Ping");
-            return SendFragment(null, 0, 0, 137);
+            return SendFragment(null, 0, 0, 137, true);
         }
 
         public int SendPong(byte[] data, int offset, int len)
         {
             Log("WebSocketClient-SEND-Pong");
-            return SendFragment(null, 0, 0, 138);
+            return SendFragment(null, 0, 0, 138, true);
         }
 
         // This controls the flow of fragments being sent, queuing send operations if needed
@@ -232,12 +233,22 @@ namespace MeshCentralRouterCmd
         }
 
         // Fragment op code (129 = text, 130 = binary)
-        public int SendFragment(byte[] data, int offset, int len, byte op)
+        private int SendFragment(byte[] data, int offset, int len, byte op, bool ownershipReleased)
         {
-            if (ws == null) return 0;
+            if ((ws == null) || (data == null) || (len == 0)) return 0;
             TlsDump("Out(" + op + ")", data, offset, len);
             lock (pendingSends)
             {
+                // Since this is going into a aynsc send or in a queue, copy the outgoing data into a new buffer.
+                // TODO: This could be optimized to only be done in some cases
+                if (ownershipReleased == false)
+                {
+                    byte[] buf = new byte[len];
+                    Array.Copy(data, offset, buf, 0, len);
+                    data = buf;
+                    offset = 0;
+                }
+
                 if (pendingSend != null)
                 {
                     // A send operating is already being processes, queue this send.
@@ -276,9 +287,7 @@ namespace MeshCentralRouterCmd
             if ((q == true) && (onSendOk != null)) { onSendOk(this); }
         }
 
-        private static Mutex ReceivePauseMutex = null;
-
-        private async Task ReceiveLoop()
+        private void ReceiveLoop()
         {
             SetState(ConnectionStates.Connected);
             var loopToken = CTS.Token;
@@ -293,9 +302,19 @@ namespace MeshCentralRouterCmd
                     outputStream = new MemoryStream(8192);
                     do
                     {
-                        receiveResult = await ws.ReceiveAsync(bufferEx, CTS.Token);
-                        if (receiveResult.MessageType != WebSocketMessageType.Close)
-                            outputStream.Write(buffer, 0, receiveResult.Count);
+                        try
+                        {
+                            Task<WebSocketReceiveResult> t = ws.ReceiveAsync(bufferEx, CTS.Token);
+                            t.Wait();
+                            receiveResult = t.Result;
+                            if (receiveResult.MessageType != WebSocketMessageType.Close) { outputStream.Write(buffer, 0, receiveResult.Count); }
+                        }
+                        catch (Exception)
+                        {
+                            outputStream?.Dispose();
+                            SetState(0);
+                            return;
+                        }
                     }
                     while (!receiveResult.EndOfMessage);
                     if (receiveResult.MessageType == WebSocketMessageType.Close) break;
