@@ -18,15 +18,18 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
+using System.ServiceProcess;
 using System.Web.Script.Serialization;
 using System.Net;
+using System.Configuration.Install;
+using System.Reflection;
 
 namespace MeshCentralRouterCmd
 {
     class Program
     {
         static bool debug = false;
-        static bool tlsdump = false;
+        //static bool tlsdump = false;
         static bool ignoreCert = false;
         static bool inaddrany = false;
         static MeshCentralServer meshcentral;
@@ -43,15 +46,28 @@ namespace MeshCentralRouterCmd
         static int remotePort = 0;
         static string remoteIP = null;
         static string remoteNodeId = null;
+        static bool runAsService = false;
+        static string executablePath = null;
 
-        [STAThread]
+        static public void Log(string msg)
+        {
+            Console.WriteLine(msg);
+            //try { File.AppendAllText(Path.Combine(executablePath, "debug.log"), DateTime.Now.ToString("HH:mm:tt.ffff") + ": MCAgent: " + msg + "\r\n"); } catch (Exception) { }
+        }
+
+        //[STAThread]
         static void Main(string[] args)
         {
-            Console.WriteLine("MeshCentral Router CMD.");
+            // Get our assembly path
+            FileInfo fi = new FileInfo(Path.Combine(Assembly.GetExecutingAssembly().Location));
+            executablePath = fi.Directory.FullName;
+
+            Log("MeshCentral Router Command Line Tool.");
 
             // Parse the meshaction.txt file
             string action = null;
             try { action = File.ReadAllText("meshaction.txt"); } catch (Exception) { }
+            if (action == null) { try { action = File.ReadAllText(Path.Combine(executablePath, "meshaction.txt")); } catch (Exception) { } }
             if (action != null)
             {
                 Dictionary<string, object> jsonAction = new Dictionary<string, object>();
@@ -74,14 +90,17 @@ namespace MeshCentralRouterCmd
             }
 
             // Parse arguments
+            bool help = false;
             for (int i = 0; i < args.Length; i++)
             {
                 string arg = args[i].ToLower();
+                if (arg == "--help") { help = true; }
                 if (arg == "--debug") { debug = true; }
-                if (arg == "--tlsdump") { tlsdump = true; }
+                //if (arg == "--tlsdump") { tlsdump = true; }
                 if (arg == "--ignorecert") { ignoreCert = true; }
                 if (arg == "--all") { inaddrany = true; }
                 if (arg == "--inaddrany") { inaddrany = true; }
+                if (arg == "--service") { runAsService = true; }
                 if ((arg == "--pass") && (i < (args.Length - 1))) { password = args[i + 1]; }
                 if ((arg == "--user") && (i < (args.Length - 1))) { username = args[i + 1]; }
                 if ((arg == "--password") && (i < (args.Length - 1))) { password = args[i + 1]; }
@@ -92,12 +111,75 @@ namespace MeshCentralRouterCmd
                 if ((arg == "--serverid") && (i < (args.Length - 1))) { serverid = args[i + 1]; }
                 if ((arg == "--serverhttpshash") && (i < (args.Length - 1))) { serverTlsHash = args[i + 1]; }
                 if ((arg == "--servertlshash") && (i < (args.Length - 1))) { serverTlsHash = args[i + 1]; }
+                if (arg == "--install") { Log("Installing service..."); ManagedInstallerClass.InstallHelper(new string[] { Assembly.GetExecutingAssembly().Location }); return; }
+                if (arg == "--uninstall") { Log("Uninstalling service..."); ManagedInstallerClass.InstallHelper(new string[] { "/u", Assembly.GetExecutingAssembly().Location }); return; }
+                if (arg == "--start") {
+                    Log("Starting service...");
+                    ServiceController service = new ServiceController("MeshCentralRouter");
+                    try { service.Start(); service.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromMilliseconds(20000)); } catch (Exception ex) { Log(ex.ToString()); }
+                    return;
+                }
+                if (arg == "--stop")
+                {
+                    Log("Stopping service...");
+                    ServiceController service = new ServiceController("MeshCentralRouter");
+                    try { service.Stop(); service.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromMilliseconds(20000)); } catch (Exception ex) { Log(ex.ToString()); }
+                    return;
+                }
             }
 
+            if (runAsService)
+            {
+                ServiceBase[] ServicesToRun;
+                ServicesToRun = new ServiceBase[] { new MainService() };
+                ServiceBase.Run(ServicesToRun);
+            }
+            else
+            {
+                if ((action == null) || (help == true))
+                {
+                    Console.WriteLine("This tool is used along with a MeshCentral account to map a local TCP port to a remote port on any computer on your MeshCentral account. This action requires many arguments, to avoid specifying them all it's best to download the meshaction.txt file from the web site and place it in the current folder. Example usage:");
+                    Console.WriteLine("");
+                    Console.WriteLine("  (Place meshaction.txt file in current folder)");
+                    Console.WriteLine("  " + fi.Name + " --pass myAccountPassword");
+                    Console.WriteLine("");
+                    Console.WriteLine("You can also install and start this tool as a Windows Service:");
+                    Console.WriteLine("");
+                    Console.WriteLine("  " + fi.Name + " --install");
+                    Console.WriteLine("  " + fi.Name + " --start");
+                    Console.WriteLine("  " + fi.Name + " --stop");
+                    Console.WriteLine("  " + fi.Name + " --uninstall");
+                    Console.WriteLine("");
+                    Console.WriteLine("When running as a Windows service, the account password must be in the action.txt file.");
+                    Environment.Exit(0);
+                    return;
+                }
+
+                if ((serverid != null) && (url == null))
+                {
+                    // Discover the server
+                    Log("Searching for server...");
+                    discovery = new MeshDiscovery();
+                    discovery.OnNotify += Discovery_OnNotify;
+                    discovery.MulticastPing();
+                }
+                else
+                {
+                    ConnectToServer();
+                }
+
+                // Wait until exit
+                while (true) { System.Threading.Thread.Sleep(5000); } // Wait here.
+            }
+        }
+
+        public static void Start()
+        {
+            if ((meshcentral != null) || (discovery != null)) return;
             if ((serverid != null) && (url == null))
             {
                 // Discover the server
-                Console.WriteLine("Searching for server...");
+                Log("Searching for server...");
                 discovery = new MeshDiscovery();
                 discovery.OnNotify += Discovery_OnNotify;
                 discovery.MulticastPing();
@@ -106,19 +188,22 @@ namespace MeshCentralRouterCmd
             {
                 ConnectToServer();
             }
+        }
+        public static void Stop()
+        {
 
-            // Wait until exit
-            while (true) { System.Threading.Thread.Sleep(5000); } // Wait here.
         }
 
         private static void ConnectToServer()
         {
+            Log("ConnectToServer()");
+
             // Check arguments
-            if (url == null) { Console.WriteLine("Missing URL."); Environment.Exit(0); return; }
-            if (username == null) { Console.WriteLine("Missing username."); Environment.Exit(0); return; }
-            if (password == null) { Console.WriteLine("Missing password."); Environment.Exit(0); return; }
-            if (remoteNodeId == null) { Console.WriteLine("Missing remote node id."); Environment.Exit(0); return; }
-            if (remotePort == 0) { Console.WriteLine("Missing remote port."); Environment.Exit(0); return; }
+            if (url == null) { Log("Missing URL."); Environment.Exit(0); return; }
+            if (username == null) { Log("Missing username."); Environment.Exit(0); return; }
+            if (password == null) { Log("Missing password."); Environment.Exit(0); return; }
+            if (remoteNodeId == null) { Log("Missing remote node id."); Environment.Exit(0); return; }
+            if (remotePort == 0) { Log("Missing remote port."); Environment.Exit(0); return; }
 
             // Setup TLS connection
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -138,7 +223,8 @@ namespace MeshCentralRouterCmd
         private static void Discovery_OnNotify(MeshDiscovery sender, IPEndPoint source, IPEndPoint local, string agentCertHash, string xurl, string name, string info)
         {
             if (url != null) return;
-            if (agentCertHash == serverid) {
+            if (agentCertHash == serverid)
+            {
                 url = xurl.Replace("https://", "wss://") + "meshrelay.ashx";
                 discovery.Dispose();
                 discovery = null;
@@ -150,8 +236,8 @@ namespace MeshCentralRouterCmd
         {
             if (mapper == null)
             {
-                Console.WriteLine(meshcentral.nodes.Keys.Count + " device(s) in this account.");
-                if (meshcentral.nodes.ContainsKey(remoteNodeId) == false) { Console.WriteLine("This account does not contain this device."); Environment.Exit(0); return; }
+                Log(meshcentral.nodes.Keys.Count + " device(s) in this account.");
+                if (meshcentral.nodes.ContainsKey(remoteNodeId) == false) { Log("This account does not contain this device."); Environment.Exit(0); return; }
 
                 NodeClass node = meshcentral.nodes[remoteNodeId];
 
@@ -189,29 +275,30 @@ namespace MeshCentralRouterCmd
 
         private static void Server_onStateChanged(int state)
         {
-            if (state == 0) {
+            if (state == 0)
+            {
                 if (meshcentral.disconnectMsg == "cert")
                 {
-                    Console.WriteLine("Untrusted server TLS certificate.");
-                    Console.WriteLine("Add: --servertlshash " + meshcentral.disconnectCert.GetCertHashString());
+                    Log("Untrusted server TLS certificate.");
+                    Log("Add: --servertlshash " + meshcentral.disconnectCert.GetCertHashString());
                 }
                 else if (meshcentral.disconnectMsg != null)
                 {
-                    Console.WriteLine("Disconnected: " + meshcentral.disconnectMsg);
+                    Log("Disconnected: " + meshcentral.disconnectMsg);
                 }
                 else
                 {
-                    Console.WriteLine("Disconnected.");
+                    Log("Disconnected.");
                 }
                 Environment.Exit(0);
             }
-            if (state == 1) { Console.WriteLine("Connecting to " + meshcentral.wsurl); }
-            if (state == 2) { Console.WriteLine("Connected."); }
+            if (state == 1) { Log("Connecting to " + meshcentral.wsurl); }
+            if (state == 2) { Log("Connected."); }
         }
 
         private static void Mapper_onStateMsgChanged(string statemsg)
         {
-            Console.WriteLine("Port Mapping: " + statemsg);
+            Log("Port Mapping: " + statemsg);
         }
 
         private static bool RemoteCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)

@@ -1,0 +1,109 @@
+﻿Installing assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Rolling back assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Installing assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Rolling back assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Installing assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Installing service MeshCentralRouter...
+Service MeshCentralRouter has been successfully installed.
+Creating EventLog source MeshCentralRouter in log Application...
+Committing assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Uninstalling assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Removing EventLog source MeshCentralRouter.
+Service MeshCentralRouter is being removed from the system...
+Service MeshCentralRouter was successfully removed from the system.
+Installing assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Installing service MeshCentralRouter...
+Service MeshCentralRouter has been successfully installed.
+Creating EventLog source MeshCentralRouter in log Application...
+Committing assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Installing assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Installing service MeshCentralRouter...
+Creating EventLog source MeshCentralRouter in log Application...
+Rolling back assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Restoring event log to previous state for source MeshCentralRouter.
+Uninstalling assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Removing EventLog source MeshCentralRouter.
+Service MeshCentralRouter is being removed from the system...
+Service MeshCentralRouter was successfully removed from the system.
+Installing assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Installing service MeshCentralRouter...
+Service MeshCentralRouter has been successfully installed.
+Creating EventLog source MeshCentralRouter in log Application...
+Committing assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Uninstalling assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Removing EventLog source MeshCentralRouter.
+Service MeshCentralRouter is being removed from the system...
+Service MeshCentralRouter was successfully removed from the system.
+Installing assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+Installing service MeshCentralRouter...
+Service MeshCentralRouter has been successfully installed.
+Creating EventLog source MeshCentralRouter in log Application...
+Committing assembly 'C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe'.
+Affected parameters are:
+   logtoconsole = 
+   logfile = C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.InstallLog
+   assemblypath = C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe

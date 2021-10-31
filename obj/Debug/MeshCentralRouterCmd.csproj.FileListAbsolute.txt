@@ -1,0 +1,16 @@
+c:\users\default.desktop-9cgk2di\documents\visual studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCMD\bin\Debug\MeshCentralRouterCMD.exe.config
+c:\users\default.desktop-9cgk2di\documents\visual studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCMD\bin\Debug\MeshCentralRouterCMD.exe
+c:\users\default.desktop-9cgk2di\documents\visual studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCMD\bin\Debug\MeshCentralRouterCMD.pdb
+c:\users\default.desktop-9cgk2di\documents\visual studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCMD\obj\Debug\MeshCentralRouterCMD.ProjectInstaller.resources
+c:\users\default.desktop-9cgk2di\documents\visual studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCMD\obj\Debug\MeshCentralRouterCMD.csproj.GenerateResource.Cache
+c:\users\default.desktop-9cgk2di\documents\visual studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCMD\obj\Debug\MeshCentralRouterCMD.exe
+c:\users\default.desktop-9cgk2di\documents\visual studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCMD\obj\Debug\MeshCentralRouterCMD.pdb
+C:\Users\Default.DESKTOP-9CGK2DI\Documents\Visual Studio 2015\Projects\MeshCentralRouterCMD\MeshCentralRouterCmd\obj\Debug\MeshCentralRouterCmd.csprojResolveAssemblyReference.cache
+C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe.config
+C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\obj\Debug\MeshCentralRouterCmd.exe
+C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\obj\Debug\MeshCentralRouterCmd.pdb
+C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.exe
+C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\bin\Debug\MeshCentralRouterCmd.pdb
+C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\obj\Debug\MeshCentralRouterCmd.csprojResolveAssemblyReference.cache
+C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\obj\Debug\MeshCentralRouterCmd.ProjectInstaller.resources
+C:\Users\Default.DESKTOP-9CGK2DI\Desktop\AmtWebApp\SmallApplications\MeshCentralRouterCmd\obj\Debug\MeshCentralRouterCmd.csproj.GenerateResource.Cache

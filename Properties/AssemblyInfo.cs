@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("MeshCentralRouterCmd")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Open Source")]
 [assembly: AssemblyProduct("MeshCentralRouterCmd")]
-[assembly: AssemblyCopyright("Copyright ©  2021")]
+[assembly: AssemblyCopyright("Open Source under Apache 2.0 License")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("bd02c258-7df4-42c6-95bf-23919db1ff45")]
+[assembly: Guid("e2380a89-07e7-47e3-aeae-6f1f97690792")]
 
 // Version information for an assembly consists of the following four values:
 //
