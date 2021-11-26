@@ -47,7 +47,7 @@ namespace MeshCentralRouterCmd
         public long bytesToServerCompressed = 0;
         public long bytesToClientCompressed = 0;
 
-        public delegate void onStateMsgChangedHandler(string statemsg);
+        public delegate void onStateMsgChangedHandler(MeshMapper sender, string statemsg);
         public event onStateMsgChangedHandler onStateMsgChanged;
 
         // Starts the routing server, called when the start button is pressed
@@ -125,7 +125,7 @@ namespace MeshCentralRouterCmd
                 if (totalConnectCounter == 1) { msg += "1 connection"; }
                 if (totalConnectCounter > 1) { msg += string.Format("{0} connections", totalConnectCounter); }
             }
-            if (onStateMsgChanged != null) { onStateMsgChanged(msg); }
+            if (onStateMsgChanged != null) { onStateMsgChanged(this, msg); }
         }
 
         public void stop()

@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.IO;
+using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography.X509Certificates;
 using System.ServiceProcess;
@@ -40,14 +41,21 @@ namespace MeshCentralRouterCmd
         static string serverid = null;
         static string serverTlsHash = null;
         static MeshDiscovery discovery = null;
-        static MeshMapper mapper = null;
-        static int protocol = 1; // 1 = TCP, 2 = UDP
-        static int localPort = 0; // 0 = Any
-        static int remotePort = 0;
-        static string remoteIP = null;
-        static string remoteNodeId = null;
+        static List<MeshMapper> mappers = new List<MeshMapper>();
+        static List<PortMap> PortMaps = null;
         static bool runAsService = false;
         static string executablePath = null;
+
+        public class PortMap
+        {
+            public string name = null;
+            public string nodeName = null;
+            public int protocol = 1; // 1 = TCP, 2 = UDP
+            public int localPort = 0; // 0 = Any
+            public int remotePort = 0;
+            public string remoteIP = null;
+            public string remoteNodeId = null;
+        }
 
         static public void Log(string msg)
         {
@@ -68,6 +76,7 @@ namespace MeshCentralRouterCmd
             string action = null;
             try { action = File.ReadAllText("meshaction.txt"); } catch (Exception) { }
             if (action == null) { try { action = File.ReadAllText(Path.Combine(executablePath, "meshaction.txt")); } catch (Exception) { } }
+            PortMap defaultPortMap = new PortMap();
             if (action != null)
             {
                 Dictionary<string, object> jsonAction = new Dictionary<string, object>();
@@ -80,13 +89,41 @@ namespace MeshCentralRouterCmd
                     if (keyl == "token") { token = (string)jsonAction[key]; }
                     if (keyl == "debuglevel") { debug = ((int)jsonAction[key]) > 0; }
                     if (keyl == "serverurl") { url = (string)jsonAction[key]; }
+                    if (keyl == "hostname") { url = "wss://" + (string)jsonAction[key] + "/meshrelay.ashx"; }
                     if (keyl == "serverid") { serverid = (string)jsonAction[key]; }
                     if (keyl == "serverhttpshash") { serverTlsHash = (string)jsonAction[key]; }
-                    if (keyl == "remotetarget") { remoteIP = (string)jsonAction[key]; }
-                    if (keyl == "remoteport") { remotePort = (int)jsonAction[key]; }
-                    if (keyl == "localport") { localPort = (int)jsonAction[key]; }
-                    if (keyl == "remotenodeid") { remoteNodeId = (string)jsonAction[key]; }
+                    if (keyl == "certhash") { serverTlsHash = (string)jsonAction[key]; }
+                    if (keyl == "remotetarget") { defaultPortMap.remoteIP = (string)jsonAction[key]; }
+                    if (keyl == "remoteport") { defaultPortMap.remotePort = (int)jsonAction[key]; }
+                    if (keyl == "localport") { defaultPortMap.localPort = (int)jsonAction[key]; }
+                    if (keyl == "remotenodeid") { defaultPortMap.remoteNodeId = (string)jsonAction[key]; }
+                    if (keyl == "mappings") {
+                        PortMaps = new List<PortMap>();
+                        ArrayList xmappings = (ArrayList)jsonAction[key];
+                        foreach (Dictionary<string, object> xmap in xmappings)
+                        {
+                            PortMap addedPortMap = new PortMap();
+                            foreach (string xkey in xmap.Keys)
+                            {
+                                string xkeyl = xkey.ToLower();
+                                if (xkeyl == "name") { addedPortMap.name = (string)xmap[xkey]; }
+                                if (xkeyl == "nodename") { addedPortMap.nodeName = (string)xmap[xkey]; }
+                                if (xkeyl == "remoteip") { addedPortMap.remoteIP = (string)xmap[xkey]; }
+                                if (xkeyl == "remoteport") { addedPortMap.remotePort = (int)xmap[xkey]; }
+                                if (xkeyl == "localport") { addedPortMap.localPort = (int)xmap[xkey]; }
+                                if (xkeyl == "nodeid") { addedPortMap.remoteNodeId = (string)xmap[xkey]; }
+                            }
+                            PortMaps.Add(addedPortMap);
+                        }
+                    }
                 }
+            }
+
+            // Use the default port map if a list is not specified
+            if (PortMaps == null)
+            {
+                PortMaps = new List<PortMap>();
+                PortMaps.Add(defaultPortMap);
             }
 
             // Parse arguments
@@ -196,14 +233,16 @@ namespace MeshCentralRouterCmd
 
         private static void ConnectToServer()
         {
-            Log("ConnectToServer()");
-
             // Check arguments
             if (url == null) { Log("Missing URL."); Environment.Exit(0); return; }
             if (username == null) { Log("Missing username."); Environment.Exit(0); return; }
             if (password == null) { Log("Missing password."); Environment.Exit(0); return; }
-            if (remoteNodeId == null) { Log("Missing remote node id."); Environment.Exit(0); return; }
-            if (remotePort == 0) { Log("Missing remote port."); Environment.Exit(0); return; }
+            if ((PortMaps == null) || (PortMaps.Count == 0)) { Log("No port mappings provided."); Environment.Exit(0); return; }
+            foreach (PortMap map in PortMaps)
+            {
+                if (map.remoteNodeId == null) { Log("Missing remote node id."); Environment.Exit(0); return; }
+                if (map.remotePort == 0) { Log("Missing remote port."); Environment.Exit(0); return; }
+            }
 
             // Setup TLS connection
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -234,42 +273,46 @@ namespace MeshCentralRouterCmd
 
         private static void Server_onNodesChanged(bool fullRefresh)
         {
-            if (mapper == null)
+            if (mappers.Count == 0)
             {
                 Log(meshcentral.nodes.Keys.Count + " device(s) in this account.");
-                if (meshcentral.nodes.ContainsKey(remoteNodeId) == false) { Log("This account does not contain this device."); Environment.Exit(0); return; }
+                foreach (PortMap map in PortMaps)
+                {
+                    if (meshcentral.nodes.ContainsKey(map.remoteNodeId) == false) { Log("This account does not contain this device."); Environment.Exit(0); return; }
 
-                NodeClass node = meshcentral.nodes[remoteNodeId];
+                    NodeClass node = meshcentral.nodes[map.remoteNodeId];
 
-                // Start the port map.
-                mapper = new MeshMapper();
-                mapper.xdebug = debug;
-                mapper.inaddrany = inaddrany;
-                mapper.certhash = meshcentral.certHash;
-                mapper.onStateMsgChanged += Mapper_onStateMsgChanged; ;
-                string serverurl = url + "?nodeid=" + node.nodeid;
-                /*
-                int keyIndex = host.IndexOf("?key=");
-                if (keyIndex >= 0)
-                {
-                    serverurl = "wss://" + host.Substring(0, keyIndex) + "/" + ((node.mtype == 3) ? "local" : "mesh") + "relay.ashx?nodeid=" + node.nodeid + "&key=" + host.Substring(keyIndex + 5);
+                    // Start the port map.
+                    MeshMapper mapper = new MeshMapper();
+                    mapper.xdebug = debug;
+                    mapper.inaddrany = inaddrany;
+                    mapper.certhash = meshcentral.certHash;
+                    mapper.onStateMsgChanged += Mapper_onStateMsgChanged;
+                    string serverurl = url + "?nodeid=" + node.nodeid;
+                    /*
+                    int keyIndex = host.IndexOf("?key=");
+                    if (keyIndex >= 0)
+                    {
+                        serverurl = "wss://" + host.Substring(0, keyIndex) + "/" + ((node.mtype == 3) ? "local" : "mesh") + "relay.ashx?nodeid=" + node.nodeid + "&key=" + host.Substring(keyIndex + 5);
+                    }
+                    else
+                    {
+                        serverurl = "wss://" + host + "/" + ((node.mtype == 3) ? "local" : "mesh") + "relay.ashx?nodeid=" + node.nodeid;
+                    }
+                    */
+                    if (map.protocol == 1)
+                    {
+                        serverurl += ("&tcpport=" + map.remotePort);
+                        if (map.remoteIP != null) { serverurl += "&tcpaddr=" + map.remoteIP; }
+                    }
+                    else if (map.protocol == 2)
+                    {
+                        serverurl += ("&udpport=" + map.remotePort);
+                        if (map.remoteIP != null) { serverurl += "&udpaddr=" + map.remoteIP; }
+                    }
+                    mapper.start(meshcentral, map.protocol, map.localPort, serverurl, map.remotePort, map.remoteIP);
+                    mappers.Add(mapper);
                 }
-                else
-                {
-                    serverurl = "wss://" + host + "/" + ((node.mtype == 3) ? "local" : "mesh") + "relay.ashx?nodeid=" + node.nodeid;
-                }
-                */
-                if (protocol == 1)
-                {
-                    serverurl += ("&tcpport=" + remotePort);
-                    if (remoteIP != null) { serverurl += "&tcpaddr=" + remoteIP; }
-                }
-                else if (protocol == 2)
-                {
-                    serverurl += ("&udpport=" + remotePort);
-                    if (remoteIP != null) { serverurl += "&udpaddr=" + remoteIP; }
-                }
-                mapper.start(meshcentral, protocol, localPort, serverurl, remotePort, remoteIP);
             }
         }
 
@@ -296,7 +339,7 @@ namespace MeshCentralRouterCmd
             if (state == 2) { Log("Connected."); }
         }
 
-        private static void Mapper_onStateMsgChanged(string statemsg)
+        private static void Mapper_onStateMsgChanged(MeshMapper sender, string statemsg)
         {
             Log("Port Mapping: " + statemsg);
         }
